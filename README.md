@@ -37,7 +37,7 @@ Hands-on Lab
 
     You can deploy the template by selecting the 'Deploy to Azure' button below. You will need to create a new resource group. The suggested resource group name to use is **SmartHotelHostRG**. You will also need to select a location close to you to deploy the template to. Then choose **Review + create** followed by **Create**. 
 
-    <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fcloudworkshop.blob.core.windows.net%2Fline-of-business-application-migration%2Fsept-2020%2FSmartHotelHost.json" target="_blank">![Button to deploy the SmartHotelHost template to Azure.](allfiles/images/deploy-to-azure.png)</a>
+    <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fcloudworkshop.blob.core.windows.net%2Fline-of-business-application-migration%2Fsept-2020%2FSmartHotelHost.json" target="_blank">![Button to deploy the SmartHotelHost template to Azure.](AllFiles/Images/deploy-to-azure.png)</a>
 
     > **Note:** The template will take around 6-7 minutes to deploy. Once template deployment is complete, several additional scripts are executed to bootstrap the lab environment. **Allow at least 1 hour from the start of template deployment for the scripts to run.**
 
@@ -49,7 +49,7 @@ Hands-on Lab
 
 3. Open a browser tab and navigate to **http://\<SmartHotelHostIP-Address\>**. You should see the SmartHotel application, which is running on nested VMs within Hyper-V on the SmartHotelHost. (The application doesn't do much: you can refresh the page to see the list of guests or select 'CheckIn' or 'CheckOut' to toggle their status.)
 
-    ![Browser screenshot showing the SmartHotel application.](allfiles/images/smarthotel.png)
+    ![Browser screenshot showing the SmartHotel application.](Allfiles/Images/smarthotel.png)
 
     > **Note:** If the SmartHotel application is not shown, wait 10 minutes and try again. It takes **at least 1 hour** from the start of template deployment. You can also check the CPU, network and disk activity levels for the SmartHotelHost VM in the Azure portal, to see if the provisioning is still active.
 
@@ -69,7 +69,7 @@ The SmartHotel application comprises 4 VMs hosted in Hyper-V:
 
 For simplicity, there is no redundancy in any of the tiers.
 
-![A slide shows the on-premises SmartHotel application architecture.](allfiles/images/overview.png)
+![A slide shows the on-premises SmartHotel application architecture.](AllFiles/Images/overview.png)
 
 ## Lab #02 - Discover and assess the on-premises environment (30 minutes)
 
