@@ -1,100 +1,59 @@
-# Imersao Azure Expert 2.0
+# Workshop Day Migracao Datacenter para Nuvem
 
 Hands-on Lab
 
-## Day 1
-## Exercise #01 - Azure Calculator (20 minutes)
+## Workshop Day
+## Exercise #01 - Deploy the On-premises environment (45 minutes)
 
-1. In a browser, navigate to the [Azure Pricing Calculator](https://azure.microsoft.com/en-us/pricing/calculator/) webpage.
+## Requirements
 
-2. Add the inventory data.
+1. You will need Owner or Contributor permissions for an Azure subscription to use in the lab.
 
-   ![Screenshot of the inventory data](/AllFiles/Images/IMG01.png)
+2. Your subscription must have sufficient unused quota to deploy the VMs used in this lab. To check your quota:
 
-**Important Notes**
-- Development environment licensing will be purchased by Marketplace
-- Include Reserved instances and Azure Hybrid Benefit in the Production Environment 
-- Include VPN Gateway, Load Balancers, Public IP Address and 500 GB Outbound Data Transfer.
+    - Log in to the [Azure portal](https://portal.azure.com), select **All services** then **Subscriptions**. Select your subscription, then choose **Usage + quotas**.
+  
+    - From the **Select a provider** drop-down, select **Microsoft.Compute**.
+  
+    - From the **All service quotas** drop down, select **Standard DSv3 Family vCPUs**, **Standard FSv2 Family vCPUs** and **Total Regional vCPUs**.
+  
+    - From the **All locations** drop down, select the location where you will deploy the lab.
+  
+    - From the last drop-down, select **Show all**.
+  
+    - Check that the selected quotas have sufficient unused capacity:
+  
+        - Standard DSv3 Family vCPUs: **at least 8 vCPUs**.
+  
+        - Standard FSv2 Family vCPUs: **at least 6 vCPUs**.
 
-3. Scroll to the bottom of the Azure Pricing Calculator webpage to view total Estimated monthly cost.
+        - Total Regional vCPUs: **at least 14 vCPUs**.
 
-4. Change the currency to Brazilian Real (R$), then select Export to download a copy of the estimate for offline viewing in Microsoft Excel (.xlsx) format.
+    > **Note:** If you are using an Azure Pass subscription, you may not meet the vCPU quotas above. In this case, you can still complete the lab.
 
-## Exercise #02 - TCO Calculator (15 minutes) 
+## Deploy the on-premises environment
 
-1. In a browser, navigate to the [Total Cost of Ownership (TCO) Calculator](https://azure.microsoft.com/en-us/pricing/tco/calculator/) page.
+1. Deploy the template **SmartHotelHost.json** to a new resource group. This template deploys a virtual machine running nested Hyper-V, with 4 nested VMs. This comprises the 'on-premises' environment which you will assess and migrate during this lab.
 
-2. To add details of your on-premises server infrastructure, click **+ Add server workload** in the **Define your workloads** pane.
+    You can deploy the template by selecting the 'Deploy to Azure' button below. You will need to create a new resource group. The suggested resource group name to use is **SmartHotelHostRG**. You will also need to select a location close to you to deploy the template to. Then choose **Review + create** followed by **Create**. 
 
-    | Settings | Value |
-    | -- | -- |
-    | Name | **Servers: Windows VMs** |
-    | Workload | **Windows/Linux server** |
-    | Environment | **Virtual Machines** |
-    | Operating system | **Windows** |  
-    | VMs | **50** |
-    | Virtualization | **Hyper-V** |
-    | Core(s) | **8**|
-    | RAM (GB) | **16** |
-    | Optimize by | **CPU** |
-    | Windows Server 2008/2008 R2 | **Off** |
-    | | |
+    <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fcloudworkshop.blob.core.windows.net%2Fline-of-business-application-migration%2Fsept-2020%2FSmartHotelHost.json" target="_blank">![Button to deploy the SmartHotelHost template to Azure.](images/BeforeTheHOL/deploy-to-azure.png "Deploy the SmartHotelHost template to Azure")</a>
 
-3. Select **+ Add server workload** to make a row for a new server workloads definition. 
+    > **Note:** The template will take around 6-7 minutes to deploy. Once template deployment is complete, several additional scripts are executed to bootstrap the lab environment. **Allow at least 1 hour from the start of template deployment for the scripts to run.**
 
-    | Settings | Value |
-    | -- | -- |
-    | Name | **Servers: Linux VMs** |
-    | Workload | **Windows/Linux server** |
-    | Environment | **Virtual Machines** |
-    | Operating system | **Linux** |  
-    | VMs | **20** |
-    | Virtualization | **VMware** |
-    | Core(s) | **8**|
-    | RAM (GB) | **16** |
-    | Optimize by | **CPU** |
-    | Windows Server 2008/2008 R2 | **Off** |
-    | | |
+### Verify the on-premises environment
 
-4. In the **Storage** pane, click **Add storage**.
+1. Navigate to the **SmartHotelHost** VM that was deployed by the template in the previous step.
 
-    | Settings | Value |
-    | -- | -- |
-    | Name | **Server Storage** |
-    | Storage type | **Local Disk/SAN** |
-    | Disk type | **HDD** |
-    | Capacity | **30 TB** |  
-    | Backup | **50 TB** |
-    | Archive | **0 TB** |
-    | | |
+2. Make a note of the public IP address.
 
-5. In the **Networking** pane, add bandwidth. 
+3. Open a browser tab and navigate to **http://\<SmartHotelHostIP-Address\>**. You should see the SmartHotel application, which is running on nested VMs within Hyper-V on the SmartHotelHost. (The application doesn't do much: you can refresh the page to see the list of guests or select 'CheckIn' or 'CheckOut' to toggle their status.)
 
-    | Settings | Value |
-    | -- | -- |
-    | Outbound bandwidth | 5 TB|
-    | | |
+    ![Browser screenshot showing the SmartHotel application.](images/BeforeTheHOL/smarthotel.png)
 
-6. Click **Next**.
+    > **Note:** If the SmartHotel application is not shown, wait 10 minutes and try again. It takes **at least 1 hour** from the start of template deployment. You can also check the CPU, network and disk activity levels for the SmartHotelHost VM in the Azure portal, to see if the provisioning is still active.
 
-7. Explore the options and make any adjustments that you require. 
-
-    | Settings | Value |
-    | -- | -- |
-    | Currency | **Brazilian Real (R$)** |
-    | | |
-
-8. Click **Next**.
-
-9. Review the Azure cost saving recommendations and visualizations.
-
-    | Settings | Value |
-    | -- | -- |
-    | Timeframe| **3 years** |
-    | Region | **Brazil South** |
-    | | |
-
-10. To save or print a PDF copy of the report, click **Download**.
+You should follow all steps provided *before* performing the Hands-on lab.
 
 ## Lab #01 - Resource Groups (15 minutes)
 
@@ -1519,13 +1478,3 @@ In the Azure portal, navigate back to the **Monitor** blade, click **Logs**.
 1. End of day 3 and **Imersao Azure Azure Expert**.
 
 1. Continue in the **Mentoria Arquiteto Cloud**.
-
-
-
-
-
-
-
-
-
-
