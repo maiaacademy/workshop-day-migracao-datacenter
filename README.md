@@ -3,7 +3,7 @@
 Hands-on Lab
 
 ## Workshop Day
-## Exercise #01 - Deploy the On-premises environment (45 minutes)
+## Exercise #01 - Deploy the On-premises environment (30 minutes)
 
 ## Requirements
 
@@ -37,7 +37,7 @@ Hands-on Lab
 
     You can deploy the template by selecting the 'Deploy to Azure' button below. You will need to create a new resource group. The suggested resource group name to use is **SmartHotelHostRG**. You will also need to select a location close to you to deploy the template to. Then choose **Review + create** followed by **Create**. 
 
-    <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fcloudworkshop.blob.core.windows.net%2Fline-of-business-application-migration%2Fsept-2020%2FSmartHotelHost.json" target="_blank">![Button to deploy the SmartHotelHost template to Azure.](images/deploy-to-azure.png "Deploy the SmartHotelHost template to Azure")</a>
+    <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fcloudworkshop.blob.core.windows.net%2Fline-of-business-application-migration%2Fsept-2020%2FSmartHotelHost.json" target="_blank">![Button to deploy the SmartHotelHost template to Azure.](allfiles/images/deploy-to-azure.png "Deploy the SmartHotelHost template to Azure")</a>
 
     > **Note:** The template will take around 6-7 minutes to deploy. Once template deployment is complete, several additional scripts are executed to bootstrap the lab environment. **Allow at least 1 hour from the start of template deployment for the scripts to run.**
 
@@ -49,15 +49,76 @@ Hands-on Lab
 
 3. Open a browser tab and navigate to **http://\<SmartHotelHostIP-Address\>**. You should see the SmartHotel application, which is running on nested VMs within Hyper-V on the SmartHotelHost. (The application doesn't do much: you can refresh the page to see the list of guests or select 'CheckIn' or 'CheckOut' to toggle their status.)
 
-    ![Browser screenshot showing the SmartHotel application.](images/smarthotel.png)
+    ![Browser screenshot showing the SmartHotel application.](allfiles/images/smarthotel.png)
 
     > **Note:** If the SmartHotel application is not shown, wait 10 minutes and try again. It takes **at least 1 hour** from the start of template deployment. You can also check the CPU, network and disk activity levels for the SmartHotelHost VM in the Azure portal, to see if the provisioning is still active.
 
 You should follow all steps provided *before* performing the Hands-on lab.
 
-## Lab #01 - Resource Groups (15 minutes)
+## Solution architecture
 
-1. Sign in to the [Azure portal](https://portal.azure.com).
+The SmartHotel application comprises 4 VMs hosted in Hyper-V:
+
+- **Database tier** Hosted on the smarthotelSQL1 VM, which is running Windows Server 2016 and SQL Server 2017.
+
+- **Application tier** Hosted on the smarthotelweb2 VM, which is running Windows Server 2012 R2.
+
+- **Web tier** Hosted on the smarthotelweb1 VM, which is running Windows Server 2012 R2.
+
+- **Web proxy** Hosted on the  UbuntuWAF VM, which is running Nginx on Ubuntu 18.04 LTS.
+
+For simplicity, there is no redundancy in any of the tiers.
+
+![A slide shows the on-premises SmartHotel application architecture.](allfiles/images/overview.png)
+
+## Lab #02 - Discover and assess the on-premises environment (30 minutes)
+
+1. Open your browser, navigate to **https://portal.azure.com**, and log in with your Azure subscription credentials.
+
+2. Select **All services** in the portal's left navigation, then search for and select **Azure Migrate** to open the Azure Migrate Overview blade.
+
+3. Select **Assess and migrate servers**, then **Create project**.  Select your subscription and create a new resource group named **AzureMigrateRG**. Enter **SmartHotelMigration** as the Migrate project name, and choose a geography close to you to store the migration assessment data. Then select **Create**.
+
+6. The Azure Migrate deployment will start. Once it has completed, you should see the **Azure Migrate: Server Assessment** and **Azure Migrate: Server Migration** panels for the current migration project.
+
+1.  Under **Azure Migrate: Server Assessment**, select **Discover** to open the **Discover machines** blade. Under **Are your machines virtualized?**, select **Yes, with Hyper-V**.
+
+2.  In **1: Generate Azure Migrate project key**, provide **SmartHotelAppl** as name for the Azure Migrate appliance that you will set up for discovery of Hyper-V VMs. Select **Generate key** to start the creation of the required Azure resources. 
+
+3.  **Wait** for the key to be generated, then copy the **Azure Migrate project key** to your clipboard.
+
+4.  Read through the instructions on how to download, deploy and configure the Azure Migrate appliance. Close the 'Discover machines' blade (do **not** download the .VHD file or .ZIP file, the .VHD has already been downloaded for you).
+
+5. In a separate browser tab, navigate to the Azure portal. In the global search box, enter **SmartHotelHost**, then select the **SmartHotelHost** virtual machine.
+
+6. Select **Connect**, select **RDP**, then download the RDP file and connect to the virtual machine using username and password.
+
+7. In Server Manager, select **Tools**, then **Hyper-V Manager** (if Server Manager does not open automatically, open it by selecting **Start**, then **Server Manager**). In Hyper-V Manager, select **SMARTHOTELHOST**. You should now see a list of the four VMs that comprise the on-premises SmartHotel application.
+
+8. In Hyper-V Manager, under **Actions**, select **Import Virtual Machine...** to open the **Import Virtual Machine** wizard.
+
+9. At the first step, **Before You Begin**, select **Next**.
+
+10.  At the **Locate Folder** step, select **Browse** and navigate to **F:\\VirtualMachines\\AzureMigrateAppliance** (the folder name may also include a version number), then choose **Select Folder**, then select **Next**.
+
+11. At the **Select Virtual Machine** step, the **AzureMigrateAppliance** VM should already be selected. Select **Next**.
+
+12. At the **Choose Import Type** step, keep the default setting **Register the virtual machine in-place**. Select **Next**.
+
+13. At the **Connect Network** step, you will see an error that the virtual switch previously used by the Azure Migrate appliance could not be found. From the **Connection** drop down, select the **Azure Migrate Switch**, then select **Next**.
+
+    > **Note**:  The Azure Migrate appliance needs access to the Internet to upload data to Azure. It also needs access to the Hyper-V host. However, it does not need direct access to the application VMs running on the Hyper-V host.
+    >
+    > The Hyper-V environment has a NAT network using the IP address space 192.168.0.0/16. The internal NAT switch used by the SmartHotel application uses the subnet 192.168.0.0/24, and each VM in the application has been assigned a static IP address from this subnet.
+    >
+    > The Azure Migrate Appliance will be connected to a separate subnet 192.168.1.0/24, which has been set up for you. Using the 'Azure Migrate Switch' connects the appliance to this subnet. The appliance is assigned an IP address from this subnet using a DHCP service running on the SmartHotelHost.
+
+14. Review the summary page, then select **Finish** to create the Azure Migrate appliance VM.
+
+15. In Hyper-V Manager, select the **AzureMigrateAppliance** VM, then select **Start** on the left.
+
+
+
 
 1. Search for and select **Resource groups**. 
 
