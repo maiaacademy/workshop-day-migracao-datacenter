@@ -196,7 +196,7 @@ For simplicity, there is no redundancy in any of the tiers.
 
 2. On the **Dependencies** blade, select **Configure OMS workspace**.
 
-3. Create a new OMS workspace. Use **AzureMigrateWS\<unique number\>** as the workspace name, where \<unique number\> is a random number. Choose a workspace location close to your lab deployment, then select **Configure**.
+3. Create a new OMS workspace. Use **OMSW-SmartHotel\<unique number\>** as the workspace name, where \<unique number\> is a random number. Choose a workspace location close to your lab deployment, then select **Configure**.
 
 4. Wait for the workspace to be deployed. Once it is deployed, navigate to it and select **Agents management** under **Settings** on the left. Make a note of the **Workspace ID** and **Primary Key** (for example by using Notepad).
 
