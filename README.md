@@ -109,9 +109,6 @@ For simplicity, there is no redundancy in any of the tiers.
 
     > **Note**:  The Azure Migrate appliance needs access to the Internet to upload data to Azure. It also needs access to the Hyper-V host. However, it does not need direct access to the application VMs running on the Hyper-V host.
     >
-    > The Hyper-V environment has a NAT network using the IP address space 192.168.0.0/16. The internal NAT switch used by the SmartHotel application uses the subnet 192.168.0.0/24, and each VM in the application has been assigned a static IP address from this subnet.
-    >
-    > The Azure Migrate Appliance will be connected to a separate subnet 192.168.1.0/24, which has been set up for you. Using the 'Azure Migrate Switch' connects the appliance to this subnet. The appliance is assigned an IP address from this subnet using a DHCP service running on the SmartHotelHost.
 
 14. Review the summary page, then select **Finish** to create the Azure Migrate appliance VM.
 
@@ -279,7 +276,7 @@ You will now deploy the Linux versions of the Microsoft Monitoring Agent and Dep
 
     - Subscription: **Select your Azure subscription**.
   
-    - Resource group: (create new) **RG-SMARTHOTEL**
+    - Resource group: (create new) **RG-SmartHotel**
   
     - Storage account name: **sasmarthotelmigrate\[unique number\]**
   
@@ -297,9 +294,9 @@ You will now deploy the Linux versions of the Microsoft Monitoring Agent and Dep
 
     - Subscription: **Select your Azure subscription**.
   
-    - Resource group: **RG-SMARTHOTEL**
+    - Resource group: **RG-SmartHotel**
   
-    - Name: **VNET-SMARTHOTEL**
+    - Name: **VNET-SmartHotel**
   
     - Region: **East US 2**
  
@@ -307,7 +304,7 @@ You will now deploy the Linux versions of the Microsoft Monitoring Agent and Dep
 
     - IPv4 address space: **192.168.0.0/16** 
   
-    - First subnet: Select **Add subnet** and enter the following then select **Add**
+    - Subnet: Select **Add subnet** and enter the following then select **Add**
 
         - Subnet name: **SmartHotel**
    
@@ -359,7 +356,7 @@ You will now deploy the Linux versions of the Microsoft Monitoring Agent and Dep
 
 4. The **Virtual machines** tab should now show the virtual machines included in the assessment. Select the **UbuntuWAF**, **smarthotelweb1**, **smarthotelweb2** and **smarthotelSQL1** virtual machines, then select **Next**.
 
-5. In the **Target settings** tab, select your subscription and the existing **RG-SMARTHOTEL** resource group. Under **Replication storage account** select the **sasmarthotelmigrate...** storage account and under **Virtual Network** select **VNET-SMARTHOTEL**. Under **Subnet** select **SmartHotel**. Select **Next**.
+5. In the **Target settings** tab, select your subscription and the existing **RG-SmartHotel** resource group. Under **Replication storage account** select the **sasmarthotelmigrate...** storage account and under **Virtual Network** select **VNET-SmartHotel**. Under **Subnet** select **SmartHotel**. Select **Next**.
 
     > **Note:** For simplicity, in this lab you will not configure the migrated VMs for high availability, since each application tier is implemented using a single VM.
 
@@ -407,7 +404,7 @@ You will now deploy the Linux versions of the Microsoft Monitoring Agent and Dep
 
 5. **Wait** until all three **Planned failover** jobs show a **Status** of **Successful**. You should not need to refresh your browser. This could take up to 15 minutes.
 
-6. Navigate to the **RG-SMARTHOTEL** resource group and check that the VM, network interface, and disk resources have been created for each of the virtual machines being migrated.
+6. Navigate to the **RG-SmartHotel** resource group and check that the VM, network interface, and disk resources have been created for each of the virtual machines being migrated.
 
 1. The application tier machine **smarthotelweb2** is configured to connect to the application database running on the **smarthotelsql** machine.
 
