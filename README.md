@@ -268,7 +268,7 @@ You will now deploy the Linux versions of the Microsoft Monitoring Agent and Dep
 
 3. Take a few minutes to explore the dependencies view. Expand each server to show the processes running on that server. Select a process to see process information. See which connections each server makes.
 
-## Lab #03 - Azure Migrate: Server Migration (45 minutes)
+## Lab #03 - Azure Migrate: Server Migration (60 minutes)
 
 1. In the Azure portal's left navigation, select **+ Create a resource**, then search for and select **Storage account**, followed by **Create**.
 
